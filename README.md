@@ -7,90 +7,44 @@
     <img src="https://img.shields.io/github/stars/Rebzzel/kiero.svg?style=flat-square"/>
   </a>
   <br>
-  Universal graphical hook for a D3D9-D3D12, OpenGL and Vulcan based games
+  Universal graphical hook for a D3D9-D3D12, OpenGL and Vulkan based games
 </p>
 
-### Requirement
-[Windows SDK](https://www.microsoft.com/en-us/download/details.aspx?id=8279) (For D3D9/D3D10/D3D11/OpenGL hook)
+<h1 align="center">! ATTENTION !</h1>
+At the beginning, I would like to thank everyone who puts stars and says kind words. This gives me an incentive to move on. Thank you for that. But today I have bad news for you, all my projects and work are under threat.
+My computer broke down and this means that I will not be able to develop this and other projects, as well as help people with their issues.
+Since I don't have enough money and I believe that the world is not without good people, I am releasing this unfinished version of kiero so that you can see that the project is really developing, and if you want it to develop further, help raise money to fix my computer. According to my calculations, I need about $140. I will be glad and very grateful for any donation.
 
-[DirectX SDK](https://www.microsoft.com/en-us/download/details.aspx?id=4064) (For D3D9/D3D10/D3D11 hook)
+<br>
+<br>
+<p align="center">
+  <a href="https://patreon.com/rebzzel">
+    <img src="https://img.shields.io/badge/patreon-donate-%23ff424d?style=flat-square">
+  </a>
+  <a href="https://paypal.me/rebzzel">
+    <img src="https://img.shields.io/badge/paypal-donate-%230079ad?style=flat-square">
+  </a>
+</p>
+<br>
 
-[Vulkan SDK](https://www.lunarg.com/vulkan-sdk) (For Vulkan hook)
+#### Roadmap of the this version
+- [x] Userconfig
+- [ ] D3D7 support
+- [x] D3D8 support
+- [x] D3D9Ex support (thanks @breadbyte)
+- [x] Remove any dependencies
+- [x] New API (aka. alias bindings)
+- [ ] Project documentation
+- [ ] Examples
 
-[MinHook](https://github.com/TsudaKageyu/minhook) (For kiero::bind function)
+#### Need a stable branch?
+The previous stable version can be found [here](https://github.com/Rebzzel/kiero/tree/1.2.12).
 
-### Example
-To start, go to the kiero.h and select the desired hooks
-```C++
-// Example for D3D9 hook
-#define KIERO_INCLUDE_D3D9   1 // 1 if you need D3D9 hook
-#define KIERO_INCLUDE_D3D10  0 // 1 if you need D3D10 hook
-#define KIERO_INCLUDE_D3D11  0 // 1 if you need D3D11 hook
-#define KIERO_INCLUDE_D3D12  0 // 1 if you need D3D12 hook
-#define KIERO_INCLUDE_OPENGL 0 // 1 if you need OpenGL hook
-#define KIERO_INCLUDE_VULKAN 0 // 1 if you need Vulkan hook
-```
 
-Then proceed to the main work
-```C++
-// Example for D3D9 hook
+#### Need a examples?
+No examples for this version. Sorry. Try stable version.
 
-// Include required libraries
-#include "kiero.h"
-#include <d3d9.h>
-#include <Windows.h>
-
-// Create the type of function that we will hook
-typedef long(__stdcall* EndScene)(LPDIRECT3DDEVICE9);
-static EndScene oEndScene = NULL;
-
-// Declare the detour function
-long __stdcall hkEndScene(LPDIRECT3DDEVICE9 pDevice)
-{
-  // ... Your magic here ...
-  
-  // static bool init = false;
-  // if (!init)
-  // {
-  //  MessageBox(0, "Boom! It's works!", "Kiero", MB_OK);
-  //  init = true;
-  // }
-  
-  return oEndScene(pDevice);
-}
-
-int kieroExampleThread()
-{
-  if (kiero::init(kiero::RenderType::D3D9) == kiero::Status::Success)
-  // or
-  if (kiero::init(kiero::RenderType::Auto) == kiero::Status::Success)
-  {
-    // define KIERO_USE_MINHOOK must be 1
-    // the index of the required function can be found in the METHODSTABLE.txt
-    kiero::bind(42, (void**)&oEndScene, hkEndScene);
-    
-    // If you just need to get the function address you can use the kiero::getMethodsTable function
-    oEndScene = (EndScene)kiero::getMethodsTable()[42];
-  }
-
-  return 0;
-}
-
-BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD fdwReason, LPVOID)
-{
-  DisableThreadLibraryCalls(hInstance);
-
-  switch (fdwReason)
-  {
-    case DLL_PROCESS_ATTACH:
-      CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)kieroExampleThread, NULL, 0, NULL);
-      break;
-  }
-
-  return TRUE;
-}
-
-```
+<hr>
 
 ### License
 ```

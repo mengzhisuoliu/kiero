@@ -1,33 +1,34 @@
 #ifndef __KIERO_H__
 #define __KIERO_H__
 
-#include <stdint.h>
+//
+// ** ATTENTION: This version is unfinished! **
+// More information in README.md or https://github.com/Rebzzel/kiero
+//
 
-#define KIERO_VERSION "1.2.12"
+#define KIERO_VERSION "1.22.0-preview"
 
-#define KIERO_INCLUDE_D3D9   0 // 1 if you need D3D9 hook
-#define KIERO_INCLUDE_D3D10  0 // 1 if you need D3D10 hook
-#define KIERO_INCLUDE_D3D11  0 // 1 if you need D3D11 hook
-#define KIERO_INCLUDE_D3D12  0 // 1 if you need D3D12 hook
-#define KIERO_INCLUDE_OPENGL 0 // 1 if you need OpenGL hook
-#define KIERO_INCLUDE_VULKAN 0 // 1 if you need Vulkan hook
-#define KIERO_USE_MINHOOK    0 // 1 if you will use kiero::bind function
-
-#define KIERO_ARCH_X64 0
-#define KIERO_ARCH_X86 0
-
-#if defined(_M_X64)	
-# undef  KIERO_ARCH_X64
-# define KIERO_ARCH_X64 1
-#else
-# undef  KIERO_ARCH_X86
-# define KIERO_ARCH_X86 1
+#ifndef KIERO_DISABLE_USERCONFIG
+# include "kiero_userconfig.h"
 #endif
 
-#if KIERO_ARCH_X64
-typedef uint64_t uint150_t;
-#else
-typedef uint32_t uint150_t;
+#include <stdint.h>
+
+#ifndef KIERO_ASSERT
+# include <assert.h>
+# define KIERO_ASSERT(_EXPR) assert(_EXPR)
+#endif
+
+#ifndef KIERO_TEXTA
+# define KIERO_TEXTA(_TEXT) _TEXT
+#endif
+
+#ifndef KIERO_TEXTW
+# define KIERO_TEXTW(_TEXT) L##_TEXT
+#endif
+
+#ifndef KIERO_ARRAYSIZE
+# define KIERO_ARRAYSIZE(_ARR) ((size_t)(sizeof(_ARR) / sizeof(*(_ARR))))
 #endif
 
 namespace kiero
@@ -36,14 +37,15 @@ namespace kiero
 	{
 		enum Enum
 		{
-			UnknownError = -1,
-			NotSupportedError = -2,
 			ModuleNotFoundError = -3,
 
-			AlreadyInitializedError = -4,
-			NotInitializedError = -5,
+			NotImplementedError = -2,
+
+			UnknownError = -1,
 
 			Success = 0,
+
+			AlreadyInitialized = 1,
 		};
 	};
 
@@ -53,26 +55,29 @@ namespace kiero
 		{
 			None,
 
+			D3D7,
+			D3D8,
 			D3D9,
+			D3D9Ex,
 			D3D10,
 			D3D11,
 			D3D12,
-
+			
 			OpenGL,
 			Vulkan,
 
-			Auto
+			Auto,
 		};
 	};
 
 	Status::Enum init(RenderType::Enum renderType);
 	void shutdown();
 
-	Status::Enum bind(uint16_t index, void** original, void* function);
-	void unbind(uint16_t index);
-
 	RenderType::Enum getRenderType();
-	uint150_t* getMethodsTable();
+	uintptr_t getMethodAddress(const char* alias);
+
+	Status::Enum bind(const char* alias, void** original, void* function);
+	void unbind(const char* alias);
 }
 
 #endif // __KIERO_H__
