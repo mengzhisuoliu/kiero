@@ -1,3 +1,9 @@
+> [!WARNING]
+> This project is no longer maintained and will not receive any further updates.
+>
+> We recommend switching to the new project [kiero2](https://github.com/kirchesz/kiero2).
+
+
 <h1 align="center">kiero</h1>
 <p align="center">
   <a href="https://github.com/Rebzzel/kiero/blob/master/LICENSE">
